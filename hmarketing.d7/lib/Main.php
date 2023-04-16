@@ -1,10 +1,10 @@
 <?
 // пространство имен для класса Test
-namespace Hmarketing\D7;
+namespace Hmarketing\Main;
 // пространство имен для подключения класса с ORM таблицы hmarketing_test
-use Hmarketing\D7\DataTable;
+use Hmarketing\Data\DataTable;
 
-class Test
+class Main
 {
     // метод для получения строки из таблицы базы данных hmarketing_test
     public static function get()

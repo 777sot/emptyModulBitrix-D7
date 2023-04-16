@@ -4,6 +4,7 @@ Bitrix\Main\Loader::registerAutoloadClasses(
 	"hmarketing.d7",
 	array(
 		// ключ - имя класса с простанством имен, значение - путь относительно корня сайта к файлу
-		"hmarketing\\D7\\Test" => "lib/test.php",
+		"hmarketing\\Main\\Main" => "lib/Main.php",
+		"hmarketing\\Data\\DataTable" => "lib/data.php",
 	)
 );

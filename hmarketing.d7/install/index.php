@@ -52,6 +52,8 @@ class Hmarketing_D7 extends CModule
     // метод отрабатывает при установке модуля
     function DoInstall()
     {
+        // глобальная переменная с обстрактным классом
+        global $APPLICATION;
         // создаем таблицы баз данных, необходимые для работы модуля
         $this->InstallDB();
         // регистрируем обработчики событий
@@ -60,6 +62,11 @@ class Hmarketing_D7 extends CModule
         $this->InstallFiles();
         // регистрируем модуль в системе
         ModuleManager::RegisterModule("hmarketing.d7");
+        // подключаем скрипт с административным прологом и эпилогом
+        $APPLICATION->includeAdminFile(
+            Loc::getMessage('INSTALL_TITLE'),
+            __DIR__ . '/instalInfo.php'
+        );
         // для успешного завершения, метод должен вернуть true
         return true;
     }
@@ -67,6 +74,8 @@ class Hmarketing_D7 extends CModule
     // метод отрабатывает при удалении модуля
     function DoUninstall()
     {
+        // глобальная переменная с обстрактным классом
+        global $APPLICATION;
         // удаляем таблицы баз данных, необходимые для работы модуля
         $this->UnInstallDB();
         // удаляем обработчики событий
@@ -75,6 +84,11 @@ class Hmarketing_D7 extends CModule
         $this->UnInstallFiles();
         // удаляем регистрацию модуля в системе
         ModuleManager::UnRegisterModule("hmarketing.d7");
+        // подключаем скрипт с административным прологом и эпилогом
+        $APPLICATION->includeAdminFile(
+            Loc::getMessage('DEINSTALL_TITLE'),
+            __DIR__ . '/deInstalInfo.php'
+        );
         // для успешного завершения, метод должен вернуть true
         return true;
     }
@@ -104,7 +118,7 @@ class Hmarketing_D7 extends CModule
         // изначально устанавливаем переменной errors булево значение false
         $this->errors = false;
         // метод выполняет пакет запросов из файла uninstall.sql и возвращает false в случае успеха или массив ошибок
-        $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/local/modules/hmarketing.D7/install/db/uninstall.sql");
+        $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/local/modules/hmarketing.d7/install/db/uninstall.sql");
         // проверяем ответ, если ответ вернул false, значит таблица успешно удалена
         if (!$this->errors) {
             // для успешного завершения, метод должен вернуть true
@@ -116,6 +130,7 @@ class Hmarketing_D7 extends CModule
     // метод для создания обработчика событий
     function InstallEvents()
     {
+        RegisterModuleDependences("hmarketing.d7", "OnSomeEvent", "hmarketing.d7", "\\Hmarketing\\Main\\Main", "get");
         // для успешного завершения, метод должен вернуть true
         return true;
     }
@@ -123,20 +138,32 @@ class Hmarketing_D7 extends CModule
     // метод для удаления обработчика событий
     function UnInstallEvents()
     {
+        UnRegisterModuleDependences("hmarketing.d7", "OnSomeEvent", "hmarketing.d7", "\\Hmarketing\\Main\\Main", "get");
         // для успешного завершения, метод должен вернуть true
         return true;
     }
 
-    // метод для копирования файлов модуля
+    // метод для копирования файлов модуля при установке
     function InstallFiles()
     {
+        // копируем файлы, которые устанавливаем вместе с модулем, копируем в пространство имен для компонентов которое будет иметь имя модуля hmarketing.7d
+        CopyDirFiles(
+            __DIR__ . '/copy_files',
+            Application::getDocumentRoot() . '/' . $this->MODULE_ID . '/',
+            true,
+            true
+        );
         // для успешного завершения, метод должен вернуть true
         return true;
     }
 
-    // метод для копирования файлов модуля
+    // метод для удаления файлов модуля при удалении
     function UnInstallFiles()
     {
+        // удаляем директорию по указанному пути до папки
+        Directory::deleteDirectory(
+            Application::getDocumentRoot() . '/' . $this->MODULE_ID
+        );
         // для успешного завершения, метод должен вернуть true
         return true;
     }

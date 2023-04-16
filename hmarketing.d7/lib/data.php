@@ -1,6 +1,6 @@
 <?
 
-namespace Hmarketing\D7;
+namespace Hmarketing\Data;
 
 use Bitrix\Main\Localization\Loc,
 	Bitrix\Main\ORM\Data\DataManager,
@@ -52,15 +52,6 @@ class DataTable extends DataManager
 				[
 					'default' => 500,
 					'title' => Loc::getMessage('TEST_ENTITY_SORT_FIELD')
-				]
-			),
-			new DatetimeField(
-				'CREATED',
-				[
-					'default' => function () {
-						return new DateTime();
-					},
-					'title' => Loc::getMessage('TEST_ENTITY_CREATED_FIELD')
 				]
 			),
 		];
